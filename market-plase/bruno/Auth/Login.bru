@@ -1,0 +1,60 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "testuser",
+    "password": "password123"
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has token", function() {
+    expect(res.body.token).to.be.a('string');
+  });
+  
+  // Сохраняем токен в переменную окружения
+  if (res.body.token) {
+    bru.setEnvVar("token", res.body.token);
+  }
+}
+
+docs {
+  # Вход в систему
+  
+  Авторизация существующего пользователя.
+  
+  ## Тело запроса
+  - `username` (обязательно) - имя пользователя
+  - `password` (обязательно) - пароль
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": 1,
+      "username": "testuser",
+      "email": "test@example.com"
+    }
+  }
+  ```
+  
+  ## Возможные ошибки
+  - 400 - Не указано имя пользователя или пароль
+  - 401 - Неверное имя пользователя или пароль
+}

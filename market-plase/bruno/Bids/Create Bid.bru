@@ -1,0 +1,64 @@
+meta {
+  name: Create Bid
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/my-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "amount": 85000
+  }
+}
+
+tests {
+  test("Status code is 200 or 201", function() {
+    expect([200, 201]).to.include(res.status);
+  });
+  
+  test("Response has bid id", function() {
+    expect(res.body.id).to.be.a('number');
+  });
+}
+
+docs {
+  # Создание ставки на товар
+  
+  Создает ставку на товар. Ставка должна быть выше текущей максимальной ставки или начальной цены.
+  
+  ## Заголовки
+  - `Authorization: Bearer <token>` (обязательно)
+  
+  ## Параметры URL
+  - `id` - ID товара
+  
+  ## Тело запроса
+  - `amount` (обязательно) - сумма ставки, должна быть больше текущей максимальной
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "id": 10,
+    "itemId": 5,
+    "userId": 2,
+    "username": "buyer1",
+    "amount": 85000,
+    "createdAt": "2025-10-07T18:30:00.000Z"
+  }
+  ```
+  
+  ## Возможные ошибки
+  - 400 - Неверная сумма или ставка слишком низкая
+  - 400 - Нельзя делать ставку на свой товар
+  - 401 - Не авторизован
+  - 404 - Товар не найден
+}
