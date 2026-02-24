@@ -1,0 +1,43 @@
+meta {
+  name: Get Item Bids
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/items/{{itemId}}/bids
+  body: none
+  auth: none
+}
+
+docs {
+  # Получение ставок на товар
+  
+  Возвращает все ставки на конкретный товар, отсортированные по дате (новые первые).
+  
+  ## Параметры URL
+  - `id` - ID товара
+  
+  ## Ответ (успех)
+  ```json
+  [
+    {
+      "id": 1,
+      "amount": 55000,
+      "userId": 2,
+      "username": "buyer1",
+      "createdAt": "2025-10-07T17:00:00.000Z"
+    }
+  ]
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

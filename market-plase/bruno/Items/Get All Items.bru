@@ -1,0 +1,46 @@
+meta {
+  name: Get All Items
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/items
+  body: none
+  auth: none
+}
+
+docs {
+  # Получение всех товаров
+  
+  Возвращает список всех товаров, отсортированных по дате создания (новые первые).
+  
+  ## Ответ (успех)
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Ноутбук Dell",
+      "description": "Игровой ноутбук в отличном состоянии",
+      "price": 50000,
+      "userId": 1,
+      "username": "testuser",
+      "status": "active",
+      "imageUrl": "https://example.com/laptop.jpg",
+      "createdAt": "2025-10-07T16:45:52.058Z",
+      "highestBid": 55000,
+      "bidCount": 3
+    }
+  ]
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

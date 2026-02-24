@@ -1,0 +1,40 @@
+meta {
+  name: Get Stats
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/stats
+  body: none
+  auth: none
+}
+
+docs {
+  # Статистика платформы
+  
+  Возвращает общую статистику платформы.
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "totalItems": 15,
+    "totalUsers": 8,
+    "totalBids": 42,
+    "activeItems": 12,
+    "totalValue": 750000,
+    "averageItemPrice": 25000
+  }
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has stats", function() {
+    expect(res.body.totalItems).to.be.a('number');
+    expect(res.body.totalUsers).to.be.a('number');
+  });
+}

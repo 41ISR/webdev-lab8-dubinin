@@ -1,0 +1,48 @@
+meta {
+  name: Get My Bids
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/bids/my
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Получение моих ставок
+  
+  Возвращает все ставки текущего пользователя.
+  
+  ## Заголовки
+  - `Authorization: Bearer <token>` (обязательно)
+  
+  ## Ответ (успех)
+  ```json
+  [
+    {
+      "id": 10,
+      "amount": 85000,
+      "itemId": 5,
+      "itemTitle": "iPhone 14",
+      "createdAt": "2025-10-07T18:30:00.000Z",
+      "isWinning": true
+    }
+  ]
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

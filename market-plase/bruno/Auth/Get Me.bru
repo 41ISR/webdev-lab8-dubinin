@@ -1,0 +1,48 @@
+meta {
+  name: Get Me
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/auth/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Получение информации о текущем пользователе
+  
+  Возвращает информацию о текущем авторизованном пользователе.
+  
+  ## Заголовки
+  - `Authorization: Bearer <token>` (обязательно)
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "createdAt": "2025-10-07T16:22:34.688Z"
+  }
+  ```
+  
+  ## Возможные ошибки
+  - 401 - Не авторизован
+  - 403 - Недействительный токен
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has user data", function() {
+    expect(res.body.username).to.be.a('string');
+  });
+}

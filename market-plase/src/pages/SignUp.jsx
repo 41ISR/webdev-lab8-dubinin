@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../api/services';
 import { useUserStore } from '../store/useUserStore';
 
-export default function SignIn() {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+export default function SignUp() {
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -13,14 +13,31 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
+    if (formData.username.length < 3) {
+      setError('Имя пользователя должно быть не менее 3 символов');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Пароль должен быть не менее 6 символов');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await authService.login(formData);
+      const { confirmPassword, ...registerData } = formData;
+      const response = await authService.register(registerData);
       setUser(response.data.user, response.data.token);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Неверное имя пользователя или пароль');
+      setError(err.response?.data?.message || 'Ошибка регистрации');
     } finally {
       setLoading(false);
     }
@@ -29,9 +46,9 @@ export default function SignIn() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <div style={styles.icon}>🔐</div>
-        <h1 style={styles.title}>Вход</h1>
-        <p style={styles.subtitle}>Войдите в свой аккаунт</p>
+        <div style={styles.icon}>👤</div>
+        <h1 style={styles.title}>Регистрация</h1>
+        <p style={styles.subtitle}>Создайте новый аккаунт</p>
       </div>
 
       {error && (
@@ -47,7 +64,20 @@ export default function SignIn() {
             value={formData.username}
             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             placeholder="Введите имя пользователя"
+            minLength="3"
             required
+          />
+          <div style={styles.hint}>Минимум 3 символа</div>
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Email <span style={styles.optional}>(необязательно)</span></label>
+          <input
+            type="email"
+            style={styles.input}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="example@email.com"
           />
         </div>
 
@@ -59,19 +89,33 @@ export default function SignIn() {
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             placeholder="Введите пароль"
+            minLength="6"
+            required
+          />
+          <div style={styles.hint}>Минимум 6 символов</div>
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Подтверждение пароля</label>
+          <input
+            type="password"
+            style={styles.input}
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            placeholder="Повторите пароль"
             required
           />
         </div>
 
         <button type="submit" style={styles.btnSubmit} disabled={loading}>
-          {loading ? 'Вход...' : 'Войти'}
+          {loading ? 'Регистрация...' : 'Зарегистрироваться'}
         </button>
       </form>
 
       <div style={styles.divider}>или</div>
 
       <div style={styles.link}>
-        Нет аккаунта? <a href="/register" style={styles.linkA}>Зарегистрироваться</a>
+        Уже есть аккаунт? <a href="/login" style={styles.linkA}>Войти</a>
       </div>
     </div>
   );
@@ -123,6 +167,10 @@ const styles = {
     marginBottom: '8px',
     fontSize: '14px',
   },
+  optional: {
+    color: '#95a5a6',
+    fontWeight: '400',
+  },
   input: {
     width: '100%',
     padding: '12px 16px',
@@ -132,12 +180,17 @@ const styles = {
     outline: 'none',
     boxSizing: 'border-box',
   },
+  hint: {
+    fontSize: '12px',
+    color: '#7f8c8d',
+    marginTop: '6px',
+  },
   btnSubmit: {
     width: '100%',
     padding: '14px 24px',
     fontSize: '16px',
     fontWeight: '600',
-    backgroundColor: '#3498db',
+    backgroundColor: '#27ae60',
     color: 'white',
     border: 'none',
     borderRadius: '6px',

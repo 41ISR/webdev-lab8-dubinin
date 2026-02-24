@@ -1,0 +1,46 @@
+meta {
+  name: Delete Item
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/items/{{itemId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Удаление товара
+  
+  Удаляет товар. Можно удалить только свой товар и только если на него нет ставок.
+  
+  ## Заголовки
+  - `Authorization: Bearer <token>` (обязательно)
+  
+  ## Параметры URL
+  - `id` - ID товара для удаления
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "success": true,
+    "message": "Item deleted"
+  }
+  ```
+  
+  ## Возможные ошибки
+  - 400 - Нельзя удалить товар с ставками
+  - 403 - Нет прав на удаление
+  - 404 - Товар не найден
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

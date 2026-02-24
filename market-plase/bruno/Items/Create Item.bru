@@ -1,0 +1,76 @@
+meta {
+  name: Create Item
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/items
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "iPhone 14 Pro",
+    "description": "Новый iPhone 14 Pro в идеальном состоянии, все аксессуары в комплекте",
+    "price": 80000,
+    "imageUrl": "https://via.placeholder.com/300x200/e74c3c/ffffff?text=iPhone"
+  }
+}
+
+docs {
+  # Создание товара
+  
+  Создает новый товар для продажи.
+  
+  ## Заголовки
+  - `Authorization: Bearer <token>` (обязательно)
+  
+  ## Тело запроса
+  - `title` (обязательно) - название товара, максимум 100 символов
+  - `description` (обязательно) - описание товара, максимум 1000 символов
+  - `price` (обязательно) - начальная цена, должна быть > 0
+  - `imageUrl` (необязательно) - URL изображения товара
+  
+  ## Ответ (успех)
+  ```json
+  {
+    "id": 5,
+    "title": "iPhone 14",
+    "description": "Новый iPhone 14...",
+    "price": 80000,
+    "imageUrl": "https://example.com/iphone.jpg",
+    "userId": 1,
+    "username": "testuser",
+    "status": "active",
+    "highestBid": null,
+    "bidCount": 0,
+    "createdAt": "2025-10-07T18:00:00.000Z"
+  }
+  ```
+  
+  ## Возможные ошибки
+  - 400 - Неверные данные
+  - 401 - Не авторизован
+  - 403 - Недействительный токен
+}
+
+tests {
+  test("Status code is 200 or 201", function() {
+    expect([200, 201]).to.include(res.status);
+  });
+  
+  test("Response has item id", function() {
+    expect(res.body.id).to.be.a('number');
+  });
+  
+  // Сохраняем ID созданного товара
+  if (res.body.id) {
+    bru.setEnvVar("itemId", res.body.id);
+  }
+}
