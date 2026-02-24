@@ -5,13 +5,19 @@ meta {
 }
 
 delete {
-  url: {{baseUrl}}/api/items/{{itemId}}
+  url: https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/items/1771924693864
   body: none
   auth: bearer
 }
 
 auth:bearer {
   token: {{token}}
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
 }
 
 docs {
@@ -37,10 +43,4 @@ docs {
   - 400 - Нельзя удалить товар с ставками
   - 403 - Нет прав на удаление
   - 404 - Товар не найден
-}
-
-tests {
-  test("Status code is 200", function() {
-    expect(res.status).to.equal(200);
-  });
 }

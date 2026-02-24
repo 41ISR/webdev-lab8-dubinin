@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://kitek.ktkv.dev/marketplace';
+// В dev режиме используем прокси, в продакшене - прямой URL
+const API_BASE_URL = import.meta.env.DEV 
+  ? '' 
+  : 'https://kitek.ktkv.dev/marketplace';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

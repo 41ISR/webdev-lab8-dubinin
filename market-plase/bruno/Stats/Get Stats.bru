@@ -5,9 +5,20 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/stats
+  url: {{https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/stats
   body: none
   auth: none
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has stats", function() {
+    expect(res.body.totalItems).to.be.a('number');
+    expect(res.body.totalUsers).to.be.a('number');
+  });
 }
 
 docs {
@@ -26,15 +37,4 @@ docs {
     "averageItemPrice": 25000
   }
   ```
-}
-
-tests {
-  test("Status code is 200", function() {
-    expect(res.status).to.equal(200);
-  });
-  
-  test("Response has stats", function() {
-    expect(res.body.totalItems).to.be.a('number');
-    expect(res.body.totalUsers).to.be.a('number');
-  });
 }

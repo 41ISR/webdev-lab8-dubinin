@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/api/auth/register
+  url: https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/
   body: json
   auth: none
 }
@@ -15,6 +15,21 @@ body:json {
     "username": "testuser",
     "password": "password123",
     "email": "test@example.com"
+  }
+}
+
+tests {
+  test("Status code is 200 or 201", function() {
+    expect([200, 201]).to.include(res.status);
+  });
+  
+  test("Response has token", function() {
+    expect(res.body.token).to.be.a('string');
+  });
+  
+  // Сохраняем токен в переменную окружения
+  if (res.body.token) {
+    bru.setEnvVar("token", res.body.token);
   }
 }
 
@@ -44,19 +59,4 @@ docs {
   ## Возможные ошибки
   - 400 - Неверные данные
   - 409 - Пользователь уже существует
-}
-
-tests {
-  test("Status code is 200 or 201", function() {
-    expect([200, 201]).to.include(res.status);
-  });
-  
-  test("Response has token", function() {
-    expect(res.body.token).to.be.a('string');
-  });
-  
-  // Сохраняем токен в переменную окружения
-  if (res.body.token) {
-    bru.setEnvVar("token", res.body.token);
-  }
 }

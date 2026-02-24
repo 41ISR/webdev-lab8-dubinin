@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/api/items
+  url: https://upgraded-funicular-v45r5jjw7492xjr6-5173.app.github.dev/items
   body: json
   auth: bearer
 }
@@ -20,6 +20,21 @@ body:json {
     "description": "Новый iPhone 14 Pro в идеальном состоянии, все аксессуары в комплекте",
     "price": 80000,
     "imageUrl": "https://via.placeholder.com/300x200/e74c3c/ffffff?text=iPhone"
+  }
+}
+
+tests {
+  test("Status code is 200 or 201", function() {
+    expect([200, 201]).to.include(res.status);
+  });
+  
+  test("Response has item id", function() {
+    expect(res.body.id).to.be.a('number');
+  });
+  
+  // Сохраняем ID созданного товара
+  if (res.body.id) {
+    bru.setEnvVar("itemId", res.body.id);
   }
 }
 
@@ -58,19 +73,4 @@ docs {
   - 400 - Неверные данные
   - 401 - Не авторизован
   - 403 - Недействительный токен
-}
-
-tests {
-  test("Status code is 200 or 201", function() {
-    expect([200, 201]).to.include(res.status);
-  });
-  
-  test("Response has item id", function() {
-    expect(res.body.id).to.be.a('number');
-  });
-  
-  // Сохраняем ID созданного товара
-  if (res.body.id) {
-    bru.setEnvVar("itemId", res.body.id);
-  }
 }
